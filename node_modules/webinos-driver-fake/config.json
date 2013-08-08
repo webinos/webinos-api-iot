@@ -1,0 +1,51 @@
+{
+	"params" : {
+		"drivers" : [
+			{
+				"name" : "serial_driver",
+				"type" : "serial",
+				"filename" : "serialDriver.js",
+				"interfaces" : [
+					{
+						"name" : "usb1",
+						"type" : "usb",
+						"port" : "/dev/cu.usbmodemfd121",
+						"rate" : 9600
+					},
+					{
+						"name" : "zigbee1",
+						"type" : "zigbee",
+						"port" : "...",
+						"rate" : 9600
+					}					
+				]
+			},
+
+			{
+				"name" : "http_driver",
+				"type" : "http",
+				"filename" : "httpDriver.js",
+				"interfaces" : [
+					{
+						"name" : "express",
+						"type" : "ethernet",
+						"port" : "9000"
+					}				
+				]
+			},
+
+			{
+				"name" : "fake_driver",
+				"type" : "fake",
+				"filename" : "fakeDriver1.js",
+				"interfaces" : [
+					{
+						"name" : "fake",
+						"type" : "fake",
+						"port" : "fake"
+					}				
+				]
+			}
+		]
+	}
+}

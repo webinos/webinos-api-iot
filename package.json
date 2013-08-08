@@ -1,0 +1,30 @@
+{ "name": "webinos-api-iot"
+, "publishConfig": { "tag": "alpha" }
+, "description": "Sensors and Actuators API"
+, "keywords": [ "webinos", "sensors", "actuators"," API"]
+, "version": "0.0.1"
+, "homepage": "http://webinos.org/"
+, "author": "Giuseppe La Torre <giuseppe.latorre@dieei.unict.it>"
+, "repository":
+  { "type": "git"
+  , "url": "https://github.com/webinos/webinos-api-iot.git"
+  }
+, "bugs":
+  { "email": "webinos-wp4-ml@fokus.fraunhofer.de"
+  , "url": ""
+  }
+, "directories": { "lib": "./lib"
+                 }
+, "main": "./lib/rpc_iot.js"
+, "dependencies":
+  {
+  }
+, "devDependencies":
+  {
+    "webinos-jsonrpc2" : "*",
+    "serialport": "x.x.x"
+  }
+, "bundleDependencies":
+  [
+  ]
+}

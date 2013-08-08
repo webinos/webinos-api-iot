@@ -1,0 +1,24 @@
+{ "name": "webinos-driver-zephyrhrm"
+, "publishConfig": { "tag": "alpha" }
+, "description": "Zephyr Heart Rate Monitor Driver"
+, "keywords": [ "webinos", "zephyr", "hrm", "driver"]
+, "version": "0.0.1"
+, "homepage": "http://webinos.org/"
+, "author": "Giuseppe La Torre <giuseppe.latorre@dieei.unict.it>"
+, "repository":
+  {
+  }
+, "bugs":
+  { "email": "webinos-wp4-ml@fokus.fraunhofer.de"
+  , "url": ""
+  }
+, "directories": { "lib": "./lib"
+                 }
+, "main": "./lib/driverHandle.js"
+, "dependencies":
+  {
+  }
+, "bundleDependencies":
+  [
+  ]
+}
