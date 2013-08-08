@@ -1,0 +1,199 @@
+<html>
+    <head>
+        <title>webinos IoT Test</title>
+        
+        <style type="text/css"> 
+            table {color:white;}
+        </style>
+
+        <script type='text/javascript' src='./webinos.js'></script>
+        <script type='text/javascript' src='./jquery-1.8.2.min.js' ></script>
+        <script type='text/javascript'>
+
+            var current_service;
+            function callExplorer(type) {
+                webinos.dashboard
+                    .open({
+                            module: 'explorer',
+                            data: { service:"http://webinos.org/api/" + type + ".*" }
+                          }
+                        , function(){ console.log("***Dashboard opened");} )
+                          .onAction( function (data) { explorerCB(data.result); } );
+            }
+
+            function error(error) {
+                alert('Error: ' + error.message + ' (Code: #' + error.code + ')');
+            }
+
+            function explorerCB(serviceFilter){
+                webinos.discovery.findServices(
+                    new ServiceType(serviceFilter.api)
+                  , {
+                        onFound: function(service){ 
+                            if ((service.id === serviceFilter.id) && (service.address === serviceFilter.serviceAddress)) {
+                                current_service = service;
+
+                                $("#main").show();
+                                $('#messages').empty();
+                                
+                                $("#info_id").html(service.id);
+                                $("#info_name").html(service.displayName);
+                                $("#info_type").html(service.api);
+                                $("#info_description").html(service.description);
+                                $("#info_bind").html("");
+                                $("#info_configure").html("");
+                                $("#info_setval").html("");
+                                $("#actuator_val").val("");
+                                $("#info_register").html("");
+                                $("#info_unregister").html("");
+
+                                if(current_service.api.indexOf("sensors") != -1){
+                                    $("#tab_sensors").show();
+                                    $("#tab_actuators").hide();
+                                }
+                                else if(current_service.api.indexOf("actuators") != -1){
+                                    $("#tab_sensors").hide();
+                                    $("#tab_actuators").show();
+                                }
+                            }
+                        }
+                      , onError: error
+                    }
+                );
+            }
+
+            function onSensorEvent(event){
+                $("#info_register").html("Registered. Current value : " + event.sensorValues[0]);
+            }
+
+            function onActuatorEvent(event){
+                $("#info_setval").html("Someone has set : " + event.actualValue[0]);
+            }
+
+            $(document).ready(function() {
+                $("#main").hide();
+
+                $('#but_bind').bind('click', function() {
+                    current_service.bind({onBind:function(){
+                        $('#messages').append('<li> Sensor ' + current_service.api + ' bound.</li>');
+                        $('#messages').append('<li> Max Range: ' + current_service.maximumRange + '</li>');
+                        $('#messages').append('<li> Min Delay: ' + current_service.minDelay + '</li>');
+                        $('#messages').append('<li> Power: ' + current_service.power + '</li>');
+                        $('#messages').append('<li> Resolution: ' + current_service.resolution + '</li>');
+                        $('#messages').append('<li> Vendor: ' + current_service.vendor + '</li>');  
+                        $('#messages').append('<li> Version: ' + current_service.version + '</li>');
+
+                        $('#info_bind').html("Service has been bound");
+                    }});
+                }); 
+
+                $('#but_configure').bind('click', function() {
+                    if(current_service.api.indexOf("sensors") != -1){
+                        current_service.configureSensor({timeout: 120, rate: 5000, eventFireMode: "valuechange"}, 
+                            function(){
+                                $('#messages').append("<li> Sensor " + current_service.api + " configured with : Rate = 5000.</li>");
+                                $('#info_configure').html("Service has been configured");
+                            },
+                            function (){
+                                $('#messages').append('<li> Error configuring Sensor ' + current_service.api + '</li>');
+                            }
+                        );
+                    }
+                });
+
+                $("#but_setval").bind('click', function() {
+                    if(current_service.api.indexOf("actuators") != -1){
+                        current_service.setValue([$("#actuator_val").val()],
+                            function(actuatorEvent){
+                                $("#info_setval").html("Successfully set " + actuatorEvent.actualValue);
+                            },
+                            function(actuatorError){
+                                $("#info_setval").html("Error");  
+                            }
+                        );
+                    }
+                });
+
+                $('#but_register').bind('click', function() {
+                    if(current_service.api.indexOf("sensors") != -1){
+                        current_service.addEventListener('sensor', onSensorEvent , false);
+                    }
+                    else if(current_service.api.indexOf("actuators") != -1){
+                        current_service.addEventListener('actuator', onActuatorEvent , false);
+                        $("#info_register").html("Registered");
+                    }
+                });
+
+                $('#but_unregister').bind('click', function() {
+                    if(current_service.api.indexOf("sensors") != -1){
+                        current_service.removeEventListener("sensor", onSensorEvent, false);
+                    }
+                    else if(current_service.api.indexOf("actuators") != -1){
+                        current_service.removeEventListener("actuator", onActuatorEvent, false);
+                    }
+                    $("#info_register").html("Not registered");
+                });
+            });
+
+        </script>
+    </head>
+
+    <body>
+        <span>
+            <button onClick="callExplorer('sensors')">Discover Sensor</button>
+            <button onClick="callExplorer('actuators')">Discover Actuator</button>
+        </span>
+        <div id="main">
+            <div id="result">
+                <table>
+                    <tr>
+                        <td>Service ID</td><td><div id="info_id"></div></td>
+                    </tr>
+                    <tr>
+                        <td>Name</td><td><div id="info_name"></div></td>
+                    </tr>
+                    <tr>
+                        <td>Type</td><td><div id="info_type"></div></td>
+                    </tr>
+                    <tr>
+                        <td>Description</td><td><div id="info_description"></div></td>
+                    </tr>
+                    <tr>
+                        <td><button id="but_bind">Bind</button></td><td><div id="info_bind"></div></td>
+                    </tr>
+                </table>
+
+                <table id="tab_sensors">
+                    <tr>
+                        <td><button id="but_configure">Configure</button></td><td><div id="info_configure"></div></td>
+                    </tr>
+                </table>
+
+                <table id="tab_actuators">
+                    <tr>
+                        <td><input id="actuator_val" type="text" size="4"></td><td><button id="but_setval">Set</button></td><td><div id="info_setval"></div></td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <td><button id="but_register">Register</button></td><td><div id="info_register"></div></td>
+                    </tr>
+                    <tr>
+                        <td><button id="but_unregister">Unregister</button></td><td><div id="info_unregister"></div></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div id="messages"></div>
+        </div>
+    </body>
+
+
+
+
+
+
+
+
+
