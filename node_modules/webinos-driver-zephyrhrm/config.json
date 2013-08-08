@@ -1,0 +1,19 @@
+{
+	"params" : {
+		"drivers" : [
+			{
+				"name" : "zephyr_hrm_driver",
+				"type" : "serial",
+				"filename" : "zephyrHRMDriver.js",
+				"interfaces" : [
+					{
+						"name" : "bluetooth1",
+						"type" : "bluetooth",
+						"port" : "/dev/cu.HXM002536-BluetoothSeri",
+						"rate" : 9600
+					}				
+				]
+			}
+		]
+	}
+}
