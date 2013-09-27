@@ -17,8 +17,13 @@
                             module: 'explorer',
                             data: { service:"http://webinos.org/api/" + type + ".*" }
                           }
-                        , function(){ console.log("***Dashboard opened");} )
-                          .onAction( function (data) { explorerCB(data.result); } );
+
+                          , function(){ console.log("***Dashboard opened");} )
+                            .onAction( function (data) { 
+                                for(var i in data.result)
+                                    explorerCB(data.result[i]); 
+                                }
+                            );
             }
 
             function error(error) {
