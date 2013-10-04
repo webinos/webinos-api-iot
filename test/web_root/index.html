@@ -15,7 +15,7 @@
                 webinos.dashboard
                     .open({
                             module: 'explorer',
-                            data: { service:"http://webinos.org/api/" + type + ".*" }
+                            data: { service:"http://webinos.org/api/" + type + "/*" }
                           }
 
                           , function(){ console.log("***Dashboard opened");} )
