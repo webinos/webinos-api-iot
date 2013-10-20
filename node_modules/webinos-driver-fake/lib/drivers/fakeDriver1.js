@@ -80,7 +80,7 @@
         registerFunc = regFunc;
         removeFunc = remFunc;
         callbackFunc = cbkFunc;
-        setTimeout(intReg, 2000);
+        intReg();
     };
 
 
