@@ -69,8 +69,8 @@
         driverId = dId;
         registerFunc = regFunc;
         callbackFunc = cbkFunc;
-        //intReg();
-        setTimeout(intReg, 2000);
+        intReg();
+        //setTimeout(intReg, 2000);
     };
 
 
