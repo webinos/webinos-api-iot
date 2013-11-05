@@ -1,4 +1,12 @@
 {
-  "params": {
-  }
+    "apiURI": ""
+  , "instances": [{
+            "id": ""
+          , "params": {}
+        }
+    ]
+  , "submodules": [
+        "node_modules/webinos-driver-fake"
+      , "node_modules/webinos-driver-zephyrhrm"
+    ]
 }
