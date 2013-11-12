@@ -94,9 +94,9 @@
 
                 $('#but_configure').bind('click', function() {
                     if(current_service.api.indexOf("sensors") != -1){
-                        current_service.configureSensor({timeout: 120, rate: 5000, eventFireMode: "valuechange"}, 
+                        current_service.configureSensor({timeout: 120, rate: 1000, eventFireMode: "fixedinterval"}, 
                             function(){
-                                $('#messages').append("<li> Sensor " + current_service.api + " configured with : Rate = 5000.</li>");
+                                $('#messages').append("<li> Sensor " + current_service.api + " configured with : Rate = 1000.</li>");
                                 $('#info_configure').html("Service has been configured");
                             },
                             function (){
@@ -113,7 +113,9 @@
                                 $("#info_setval").html("Successfully set " + actuatorEvent.actualValue);
                             },
                             function(actuatorError){
-                                $("#info_setval").html("Error");  
+                                //$("#info_setval").html("Error");  
+                                alert("error");
+                                $("#info_setval").html("Error: " + actuatorError.message);  
                             }
                         );
                     }
