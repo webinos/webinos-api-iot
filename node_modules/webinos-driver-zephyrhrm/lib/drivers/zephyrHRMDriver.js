@@ -46,6 +46,7 @@
 
     var driverId = null;
     var registerFunc = null;
+    var removeFunc = null;
     var callbackFunc = null;
 
     var elementsList = new Array;
@@ -64,10 +65,11 @@
         'id': 0
     };
 
-    exports.init = function(dId, regFunc, cbkFunc) {
+    exports.init = function(dId, regFunc, remFunc, cbkFunc) {
         console.log('Zephyr HRM driver init - id is '+dId);
         driverId = dId;
         registerFunc = regFunc;
+        removeFunc = remFunc;
         callbackFunc = cbkFunc;
         intReg();
         //setTimeout(intReg, 2000);
