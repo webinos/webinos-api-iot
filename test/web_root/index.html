@@ -35,7 +35,7 @@
                     new ServiceType(serviceFilter.api)
                   , {
                         onFound: function(service){ 
-                            if ((service.id === serviceFilter.id) && (service.address === serviceFilter.serviceAddress)) {
+                            if ((service.id === serviceFilter.id) && (service.serviceAddress === serviceFilter.address)) {
                                 current_service = service;
 
                                 $("#main").show();

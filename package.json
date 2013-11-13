@@ -26,5 +26,6 @@
   }
 , "bundleDependencies":
   [
+    "webinos-driver-fake"
   ]
 }
