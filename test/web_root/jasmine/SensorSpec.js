@@ -14,12 +14,25 @@
  * limitations under the License.
  *
  * Copyright 2012 Ivan Glautier, Nquiring Minds
+ * Copyright 2013 Giuseppe La Torre
  ******************************************************************************/
+
+function checkEvent(event) {
+    expect(event.timestamp).toEqual(jasmine.any(Number));
+    expect(event.sensorType).toEqual("http://webinos.org/api/sensors/temperature");
+    expect(event.accuracy).toEqual(jasmine.any(Number));
+    expect(event.rate).toEqual(jasmine.any(Number));
+    //expect(event.eventFireMode).toEqual(jasmine.any(String));
+    expect(event.sensorValues).toEqual(jasmine.any(Array));
+    expect(event.sensorValues[0]).toEqual(jasmine.any(Number));
+    console.log("Temp: " + event.sensorValues[0]);
+}
+
 
 describe("Sensor API", function() {
     var sensorService;
 
-    webinos.discovery.findServices(new ServiceType("http://webinos.org/api/sensors.temperature"), {
+    webinos.discovery.findServices(new ServiceType("http://webinos.org/api/sensors/temperature"), {
         onFound: function (service) {
             sensorService = service;
         }
@@ -30,6 +43,7 @@ describe("Sensor API", function() {
             return !!sensorService;
         }, "found service", 5000);
     });
+
 
     it("should be available from the discovery", function() {
         expect(sensorService).toBeDefined();
@@ -68,36 +82,89 @@ describe("Sensor API", function() {
             expect(sensorServiceBound).toBeDefined();
         });
 
-        it("has the necessary properties and functions as bound API service", function() {
-            expect(sensorServiceBound.api).toEqual("http://webinos.org/api/sensors.temperature");
+
+        it("has the functions as sensor API service", function() {
             expect(sensorServiceBound.configureSensor).toEqual(jasmine.any(Function));
+            expect(sensorServiceBound.addEventListener).toEqual(jasmine.any(Function));
+            expect(sensorServiceBound.removeEventListener).toEqual(jasmine.any(Function));
         });
 
-    });
-});
 
-/* 
-describe ( "Test ability to successfuly detect an increase or decrease in sensor value", function () {
-    it('Test that we can detect an increase',  function () {
-        var initial = event.sensorValues[0];
-        alert('Please create an increase in sensor value');
-        expect(event.sensorValues[0]).toBeGreaterThan(initial);
-    });
-    it('Test that we can detect a decrease',  function () {
-        var initial = event.sensorValues[0];
-        alert('Please create a decrease in sensor value');
-        expect(event.sensorValues[0]).toBeLessThan(initial);
-    });
-    it('Test that we don\'t get random changes',  function () {
-        var previous = event.sensorValues[0];
-        var variance = previous/1000; // How sensitive are the different sensors? Perhaps this needs to look at the resolution?
-        var count = 0;
-        while (count < 10) {
-            setTimeout(function(){
-                expect(event.sensorValues[0]).toBeCloseTo(previous, variance);
-                previous = event.sensorValues[0];
-            },3000);
-        }
+        it("can get successive temperature values updates using addEventListener", function() {
+            var counter = 0;
+            var temperature_event;
+
+            function onSensorEvent(event){
+                counter++;
+                temperature_event = event;
+            }
+
+            sensorServiceBound.addEventListener('sensor', onSensorEvent, false);
+
+            waitsFor(function() {
+                return counter > 1;
+            }, "addEventListener being called multiple times", 6000);
+
+            runs(function() {
+                expect(counter).toBeGreaterThan(1);
+                sensorServiceBound.removeEventListener('sensor', onSensorEvent, false);
+                var tmpCounter = counter;
+
+                checkEvent(temperature_event);
+                expect(tmpCounter).toEqual(counter);
+            });
+        });
+
+
+        it("can remove event listener", function() {
+            var counter = 0;
+
+            function onSensorEvent(event){
+                counter++;
+            }
+
+            sensorServiceBound.addEventListener('sensor', onSensorEvent, false);
+
+            waitsFor(function() {
+                if(counter == 1){
+                    sensorServiceBound.removeEventListener('sensor', onSensorEvent, false);
+                    return true;
+                }
+                return false;
+            }, "addEventListener being called", 5000);
+
+            waits(3000);
+
+            runs(function() {
+                expect(counter).toEqual(1);
+            });
+        });
+
+        it("can support multiple addEventListener", function() {
+            var event1, event2;
+            
+            function onSensorEvent1(event){
+                event1 = event;
+                sensorServiceBound.removeEventListener('sensor', onSensorEvent1, false);
+            }
+            function onSensorEvent2(event){
+                event2 = event;
+                sensorServiceBound.removeEventListener('sensor', onSensorEvent2, false);
+            }
+
+            sensorServiceBound.addEventListener('sensor', onSensorEvent1, false);
+            sensorServiceBound.addEventListener('sensor', onSensorEvent2, false);
+
+            
+            waitsFor(function() {
+                return !!event1 & !!event2;
+            }, "all listeners being called", 5000);
+
+            runs(function() {
+                checkEvent(event1);
+                checkEvent(event2);
+                expect(event1).toEqual(event2);
+            });
+        });
     });
 });
-*/
