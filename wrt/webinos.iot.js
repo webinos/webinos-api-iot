@@ -37,7 +37,7 @@
      * To bind the service.
      * @param bindCB BindCallback object.
      */
-    Sensor.prototype.bind = function(bindCB) {             
+    Sensor.prototype.bind = function(bindCB) {
         var self = this;
         var rpc = webinos.rpcHandler.createRPC(this, "getStaticData", []);
         
@@ -59,8 +59,11 @@
                 
             }
         );
-
     };
+
+    Sensor.prototype.bindService = function(bindCB) {
+        this.bind(bindCB);   
+    }
     
     Sensor.prototype.configureSensor = function(params, successHandler, errorHandler){
         var rpc = webinos.rpcHandler.createRPC(this, 'configureSensor', params);
