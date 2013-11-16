@@ -87,7 +87,7 @@
 
     Sensor.prototype.removeEventListener = function(eventType, eventHandler, capture) {
         for (var i = 0; i < sensorListeners.length; i++) {
-            if (sensorListeners[i][1] == eventHandler && sensorListeners[i][2] == this.id) {
+            if (sensorListeners[i][1].toString().replace(/ /g,'') === eventHandler.toString().replace(/ /g,'') && sensorListeners[i][2] == this.id) {
                 var arguments = new Array();
                 arguments[0] = sensorListeners[i][0];
                 arguments[1] = eventType;
