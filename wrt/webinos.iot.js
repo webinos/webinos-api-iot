@@ -142,11 +142,10 @@
     };
     
     /**
-     * Launches an application.
-     * @param successCallback Success callback.
+     * Sets a value on the actuator
+     * @param successCB Success callback.
      * @param errorCallback Error callback.
-     * @param applicationID Application ID to be launched.
-     * @param params Parameters for starting the application.
+     * @param value The value to set to the actuator.
     */
     ActuatorModule.prototype.setValue = function (value, successCB, errorCallback){
         var rpc = webinos.rpcHandler.createRPC(this, "setValue", value);        
