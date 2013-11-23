@@ -97,5 +97,6 @@ Remove the added event listen.
 
 ## Links ##
 
+- [Specifications](http://dev.webinos.org/specifications/api/actuators.html)
 - [Examples](https://github.com/webinos/webinos-api-iot/wiki/Examples)
 
