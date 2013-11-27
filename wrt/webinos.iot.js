@@ -52,7 +52,7 @@
                 self.version = result.version; 
             
                 if (typeof bindCB.onBind === 'function') {
-                    bindCB.onBind(this);
+                    bindCB.onBind(self);
                 };
             },
             function (error){
@@ -139,6 +139,10 @@
                     
                 }
             );
+    };
+
+    ActuatorModule.prototype.bindService = function(bindCB) {
+        this.bind(bindCB);
     };
     
     /**
