@@ -29,12 +29,13 @@ function checkEvent(event) {
 }
 
 
-describe("Sensor API", function() {
+describe("Sensors API", function() {
     var sensorService;
 
     webinos.discovery.findServices(new ServiceType("http://webinos.org/api/sensors/temperature"), {
         onFound: function (service) {
-            sensorService = service;
+            if(service.displayName == "Test temperature sensor")
+                sensorService = service;
         }
     });
 
@@ -123,7 +124,11 @@ describe("Sensor API", function() {
                 counter++;
             }
 
-            sensorServiceBound.addEventListener('sensor', onSensorEvent, false);
+            sensorServiceBound.configureSensor({eventFireMode:'fixedinterval', rate:1000}, function(){
+                sensorServiceBound.addEventListener('sensor', onSensorEvent, false);
+            }, null);
+            //alert(JSON.stringify(sensorServiceBound));
+            
 
             waitsFor(function() {
                 if(counter == 1){
@@ -131,9 +136,9 @@ describe("Sensor API", function() {
                     return true;
                 }
                 return false;
-            }, "addEventListener being called", 5000);
+            }, "removeEventListener being called", 5000);
 
-            waits(3000);
+            waits(1000);
 
             runs(function() {
                 expect(counter).toEqual(1);
@@ -165,6 +170,82 @@ describe("Sensor API", function() {
                 checkEvent(event2);
                 expect(event1).toEqual(event2);
             });
+        });
+    });
+});
+
+
+
+
+describe("Arduino Test", function() {
+    var sensorService;
+    var arduinoSerialTest = "fake_arduino_test_sensor_serial";
+    var arduinoHttpTest = "fake_arduino_test_sensor_http";
+    var arduinoSerialIsOk = false;
+    var arduinoHttpIsOk = false;
+
+    webinos.discovery.findServices(new ServiceType("http://webinos.org/api/sensors/test"), {
+        onFound: function (service) {
+            sensorService = service;
+        }
+    });
+
+    beforeEach(function() {
+        waitsFor(function() {
+            return !!sensorService;
+        }, "found service", 5000);
+    });
+
+
+    it("should be available from the discovery", function() {
+        expect(sensorService).toBeDefined();
+    });
+
+    it("has the necessary properties as service object", function() {
+        expect(sensorService.state).toBeDefined();
+        expect(sensorService.api).toEqual(jasmine.any(String));
+        expect(sensorService.id).toEqual(jasmine.any(String));
+        expect(sensorService.displayName).toEqual(jasmine.any(String));
+        expect(sensorService.description).toEqual(jasmine.any(String));
+        expect(sensorService.icon).toEqual(jasmine.any(String));
+        expect(sensorService.bindService).toEqual(jasmine.any(Function));
+    });
+
+    describe("with bound service", function() {
+        var sensorServiceBound;
+
+        beforeEach(function() {
+            if (!sensorService) {
+                waitsFor(function() {
+                    return !!sensorService;
+                }, "found service", 5000);
+            }
+            if (!sensorServiceBound) {
+                sensorService.bindService({onBind: function(service) {
+                    sensorServiceBound = service;
+                    if(service.displayName == arduinoSerialTest){
+                        arduinoSerialIsOk = true;
+                    }
+                    if(service.displayName == arduinoHttpTest){
+                        arduinoHttpIsOk = true;
+                    }
+                }});
+                waitsFor(function() {
+                    return !!sensorServiceBound;
+                }, "the service to be bound", 1000);
+            }
+        });
+
+        it("can be bound", function() {
+            expect(sensorServiceBound).toBeDefined();
+        });
+
+        it("Arduino works with serial driver", function() {
+            expect(arduinoSerialIsOk).toEqual(true);
+        });
+
+        it("Arduino works with HTTP driver", function() {
+            expect(arduinoHttpIsOk).toEqual(true);
         });
     });
 });

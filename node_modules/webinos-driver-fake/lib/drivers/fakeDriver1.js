@@ -30,7 +30,7 @@
 
     elementsList[0] = {
         'type': 'temperature',
-        'name': 'Fake temperature sensor',
+        'name': 'Test temperature sensor',
         'description': 'Monitors kitchen temperature',
         'sa': 0,
         'interval': 1000,
@@ -52,7 +52,7 @@
 
     elementsList[2] = {
         'type': 'linearmotor',
-        'name': 'Fake linear motor',
+        'name': 'Test linearmotor actuator',
         'description': 'Fake actuator for emulation',
         'sa': 1,
         'range' : [ [0,1] ],
