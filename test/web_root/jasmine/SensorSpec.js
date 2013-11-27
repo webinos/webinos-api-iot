@@ -74,7 +74,7 @@ describe("Sensor API", function() {
                 }});
                 waitsFor(function() {
                     return !!sensorServiceBound;
-                }, "the service to be bound", 500);
+                }, "the service to be bound", 1000);
             }
         });
 
