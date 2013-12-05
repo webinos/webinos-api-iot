@@ -28,10 +28,14 @@
      * @param obj Object containing displayName, api, etc.
      */
     Sensor = function(obj) {
-       this.base = WebinosService;
-       this.base(obj);
+       WebinosService.call(this, obj);
     };
-    Sensor.prototype = new WebinosService;
+    // Inherit all functions from WebinosService
+    Sensor.prototype = Object.create(WebinosService.prototype);
+    // The following allows the 'instanceof' to work properly
+    Sensor.prototype.constructor = Sensor;
+    // Register to the service discovery
+    _webinos.registerServiceConstructor("http://webinos.org/api/sensors", Sensor);
     
     /**
      * To bind the service.
@@ -62,8 +66,8 @@
     };
 
     Sensor.prototype.bindService = function(bindCB) {
-        this.bind(bindCB);   
-    }
+        this.bind(bindCB);
+    };
     
     Sensor.prototype.configureSensor = function(params, successHandler, errorHandler){
         var rpc = webinos.rpcHandler.createRPC(this, 'configureSensor', params);
@@ -111,11 +115,14 @@
      * @param obj Object containing displayName, api, etc.
      */
     ActuatorModule = function(obj) {
-        this.base = WebinosService;
-        this.base(obj);
+        WebinosService.call(this, obj);
     };
-    
-    ActuatorModule.prototype = new WebinosService();
+    // Inherit all functions from WebinosService
+    ActuatorModule.prototype = Object.create(WebinosService.prototype);
+    // The following allows the 'instanceof' to work properly
+    ActuatorModule.prototype.constructor = ActuatorModule;
+    // Register to the service discovery
+    _webinos.registerServiceConstructor("http://webinos.org/api/actuators", ActuatorModule);
 
     /**
      * To bind the service.
