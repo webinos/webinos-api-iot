@@ -21,8 +21,7 @@
   }
 , "devDependencies":
   {
-    "webinos-jsonrpc2" : "*",
-    "serialport": "1.1.3"
+    "webinos-jsonrpc2" : "*"
   }
 , "bundleDependencies":
   [
