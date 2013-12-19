@@ -20,7 +20,4 @@
   {
     "webinos-jsonrpc2" : "*"
   }
-, "devDependencies":
-  {
-  }
 }
