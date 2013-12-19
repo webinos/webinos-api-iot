@@ -18,13 +18,6 @@
 , "main": "./lib/rpc_iot.js"
 , "dependencies":
   {
-  }
-, "devDependencies":
-  {
     "webinos-jsonrpc2" : "*"
   }
-, "bundleDependencies":
-  [
-    "webinos-driver-fake"
-  ]
 }
