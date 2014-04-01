@@ -60,7 +60,9 @@
                 };
             },
             function (error){
-                
+                if (typeof bindCB.onError === 'function') {
+                  bindCB.onError(error);
+                }
             }
         );
     };
@@ -143,7 +145,9 @@
                     }
                 },
                 function (error){
-                    
+                  if (typeof bindCB.onError === 'function') {
+                    bindCB.onError(error);
+                  }
                 }
             );
     };
